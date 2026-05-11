@@ -9,6 +9,23 @@
 (function () {
 if (typeof window === 'undefined') return;
 
+// ── PATTERN 1 (Idempotency Shield) ──────────────────────────────────────
+// This is the #1 defense against memory leaks and execution storms.
+// Without this guard, every SPA navigation or manual re-scan that
+// re-injects this script creates 14+ DUPLICATE event listeners
+// (scroll, resize, transitionend, message, DOMContentLoaded), plus
+// duplicate IntersectionObserver, ResizeObserver, and MutationObserver
+// instances. Each duplicate processes the same events, causing
+// exponential performance degradation.
+//
+// The shield ensures that even if the <script> tag is re-injected
+// (e.g., by the service worker fallback injection path which bypasses
+// the content script's detectorInjected flag), the IIFE is a no-op.
+// Re-scanning is handled by window.uicheckerScan() or the message
+// listener — never by re-executing the entire script.
+if (window.__UI_CHECKER_DETECT_LOADED__) return;
+window.__UI_CHECKER_DETECT_LOADED__ = true;
+
 /**
  * Anti-Pattern Detector for UI Checker
  * Copyright (c) 2026 Paul Bakaus
