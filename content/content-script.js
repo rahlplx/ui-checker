@@ -152,6 +152,22 @@
   window.addEventListener('popstate', onPossibleNavigation);
   window.addEventListener('hashchange', onPossibleNavigation);
 
+  // ─── Theme Injection (Pattern 4: Shared Token) ─────────────────────────
+  // Inject theme.css as a <link> BEFORE any MAIN-world scripts so that
+  // CSS Custom Properties (--uicheck-*) are available when scripts call
+  // getThemeColor(). This is the single source of truth for all brand colors.
+  let themeInjected = false;
+
+  function injectTheme() {
+    if (themeInjected) return;
+    themeInjected = true;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = chrome.runtime.getURL('theme.css');
+    link.dataset.uicheckerExtension = 'true';
+    (document.head || document.documentElement).appendChild(link);
+  }
+
   // ─── Detector Injection ────────────────────────────────────────────────
 
   function sendScanCommand() {
@@ -167,6 +183,9 @@
     }
 
     document.documentElement.dataset.uicheckerExtension = 'true';
+
+    // Pattern 4: Inject theme.css BEFORE detect.js so CSS variables are available
+    injectTheme();
 
     const script = document.createElement('script');
     script.src = chrome.runtime.getURL('detector/detect.js');
@@ -187,6 +206,8 @@
       if (callback) callback();
       return;
     }
+    // Pattern 4: Ensure theme.css is loaded for CSS variable access
+    injectTheme();
     const script = document.createElement('script');
     script.src = chrome.runtime.getURL('content/clone-engine.js');
     script.onload = () => {
@@ -209,6 +230,8 @@
       window.postMessage({ source: 'uichecker-command', action: 'start-component-picker' }, '*');
       return;
     }
+    // Pattern 4: Ensure theme.css is loaded for CSS variable access
+    injectTheme();
     const script = document.createElement('script');
     script.src = chrome.runtime.getURL('content/component-picker.js');
     script.onload = () => {

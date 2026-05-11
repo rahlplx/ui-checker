@@ -31,6 +31,7 @@
   --uicheck-slop:            #E53935;       /* AI tells — red */
   --uicheck-quality:         #FB8C00;       /* Quality issues — amber */
   --uicheck-clone:           #1E88E5;       /* Clone features — blue */
+  --uicheck-clone-subtle:    rgba(30, 136, 229, 0.08);  /* Clone hover highlight */
 
   /* ── Dark Theme Surface ── */
   --uicheck-bg:              #1a1a1a;

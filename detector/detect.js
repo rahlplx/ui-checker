@@ -1674,8 +1674,27 @@ if (IS_BROWSER) {
   const EXTENSION_MODE = (_myScript && _myScript.dataset.uicheckerExtension === 'true')
     || document.documentElement.dataset.uicheckerExtension === 'true';
 
-  const BRAND_COLOR = '#607D8B';
-  const BRAND_COLOR_HOVER = '#455A64';
+  // ── PATTERN 4 (Shared Token): All brand colors come from theme.css CSS variables ──
+  // If the brand changes to "All Star Blue," you only change one line in
+  // theme.css — not find-and-replace hex codes across five JavaScript files.
+  //
+  // theme.css is injected as a <link> by content-script.js BEFORE this
+  // script runs, so the CSS variables are available in the DOM.
+  //
+  // Fallback values are provided in case theme.css hasn't loaded yet
+  // (e.g., during the brief window before the <link> is processed).
+
+  function getThemeColor(varName, fallback) {
+    try {
+      const val = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      return val || fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  const BRAND_COLOR = getThemeColor('--uicheck-primary', '#607D8B');
+  const BRAND_COLOR_HOVER = getThemeColor('--uicheck-primary-hover', '#455A64');
   const LABEL_BG = BRAND_COLOR;
   const OUTLINE_COLOR = BRAND_COLOR;
 
@@ -2233,12 +2252,12 @@ if (IS_BROWSER) {
     }
     console.group(
       `%c[uichecker] ${allFindings.length} anti-pattern${allFindings.length === 1 ? '' : 's'} found`,
-      'color: #607D8B; font-weight: bold'
+      `color: ${BRAND_COLOR}; font-weight: bold`
     );
     for (const { el, findings } of allFindings) {
       for (const f of findings) {
         console.log(`%c${f.type || f.id}%c ${f.detail || f.snippet}`,
-          'color: #607D8B; font-weight: bold', 'color: inherit', el);
+          `color: ${BRAND_COLOR}; font-weight: bold`, 'color: inherit', el);
       }
     }
     console.groupEnd();

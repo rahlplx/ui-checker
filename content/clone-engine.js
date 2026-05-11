@@ -15,14 +15,20 @@
   if (window.__UI_CHECKER_CLONE_LOADED__) return;
   window.__UI_CHECKER_CLONE_LOADED__ = true;
 
-  // ─── Brand Colors (from theme.css) ───────────────────────────────────────
+  // ── PATTERN 4 (Shared Token): All brand colors from theme.css ──────────────
+  // If the brand changes, you only change one line in theme.css.
+  // Fallback values match theme.css defaults for the brief window
+  // before the <link> stylesheet is fully processed.
 
-  const BRAND = {
-    primary: '#607D8B',
-    clone: '#1E88E5',
-    success: '#43A047',
-    error: '#E53935',
-  };
+  function getThemeColor(varName, fallback) {
+    try {
+      const val = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      return val || fallback;
+    } catch { return fallback; }
+  }
+
+  const BRAND_SUCCESS = () => getThemeColor('--uicheck-success', '#43A047');
+  const BRAND_ERROR = () => getThemeColor('--uicheck-error', '#E53935');
 
   // ─── Toast Notification ──────────────────────────────────────────────────
 
@@ -32,7 +38,7 @@
 
     const toast = document.createElement('div');
     toast.id = 'uichecker-clone-toast';
-    const bgColor = isSuccess ? BRAND.success : BRAND.error;
+    const bgColor = isSuccess ? BRAND_SUCCESS() : BRAND_ERROR();
     toast.style.cssText = `
       position: fixed;
       bottom: 24px;

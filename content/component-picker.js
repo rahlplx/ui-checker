@@ -22,14 +22,22 @@
   let highlightOverlay = null;
   let toastElement = null;
 
-  // ─── Brand Colors (from theme.css) ───────────────────────────────────────
+  // ── PATTERN 4 (Shared Token): All brand colors from theme.css ──────────────
+  // If the brand changes, you only change one line in theme.css.
+  // Fallback values match theme.css defaults for the brief window
+  // before the <link> stylesheet is fully processed.
 
-  const BRAND = {
-    primary: '#607D8B',
-    error: '#E53935',
-    success: '#43A047',
-    clone: '#1E88E5',
-  };
+  function getThemeColor(varName, fallback) {
+    try {
+      const val = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      return val || fallback;
+    } catch { return fallback; }
+  }
+
+  const BRAND_CLONE = () => getThemeColor('--uicheck-clone', '#1E88E5');
+  const BRAND_CLONE_SUBTLE = () => getThemeColor('--uicheck-clone-subtle', 'rgba(30, 136, 229, 0.08)');
+  const BRAND_SUCCESS = () => getThemeColor('--uicheck-success', '#43A047');
+  const BRAND_ERROR = () => getThemeColor('--uicheck-error', '#E53935');
 
   // ─── Highlight Overlay ────────────────────────────────────────────────────
 
@@ -40,8 +48,8 @@
       position: fixed;
       pointer-events: none;
       z-index: 2147483646;
-      border: 2px dashed ${BRAND.clone};
-      background: rgba(30, 136, 229, 0.08);
+      border: 2px dashed ${BRAND_CLONE()};
+      background: ${BRAND_CLONE_SUBTLE()};
       border-radius: 4px;
       transition: all 0.1s ease;
       display: none;
@@ -72,7 +80,7 @@
 
     const toast = document.createElement('div');
     toast.id = 'uichecker-picker-toast';
-    const bgColor = isSuccess ? BRAND.success : BRAND.error;
+    const bgColor = isSuccess ? BRAND_SUCCESS() : BRAND_ERROR();
     toast.style.cssText = `
       position: fixed;
       bottom: 24px;

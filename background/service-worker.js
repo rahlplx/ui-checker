@@ -44,6 +44,9 @@ function updateBadge(tabId) {
   const count = state?.findings?.reduce((sum, f) => sum + f.findings.length, 0) || 0;
   const text = count > 0 ? String(count) : '';
   chrome.action.setBadgeText({ text, tabId }).catch(() => {});
+  // PATTERN 4 NOTE: Service workers have no DOM access, so CSS variables
+  // are unavailable. This #607D8B must mirror --uicheck-primary in theme.css.
+  // If the brand changes, update BOTH theme.css AND this constant.
   chrome.action.setBadgeBackgroundColor({ color: '#607D8B', tabId }).catch(() => {});
 }
 
