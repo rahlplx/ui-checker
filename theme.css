@@ -1,0 +1,234 @@
+/**
+ * UI Checker v3 — Unified Design System
+ * CSS Custom Properties for global brand management.
+ *
+ * Brand: Material Blue Grey (#607D8B)
+ *
+ * This file serves DUAL purposes:
+ *   1. CSS Custom Properties :root block — the single source of truth for all brand colors
+ *   2. Injected highlight styles — applied to page DOM by the detector
+ *
+ * All extension UI (popup, panel, sidebar) mirrors these variables locally
+ * because Chrome extension popups can't @import from the extension root.
+ */
+
+:root {
+  /* ── Primary Brand Colors ── */
+  --uicheck-primary:         #607D8B;
+  --uicheck-primary-hover:   #455A64;
+  --uicheck-primary-light:   #90A4AE;
+  --uicheck-primary-dark:    #37474F;
+
+  /* ── Semantic Colors ── */
+  --uicheck-error:           #E53935;
+  --uicheck-error-border:    #E53935;
+  --uicheck-error-bg:        rgba(229, 57, 53, 0.08);
+  --uicheck-warning:         #FB8C00;
+  --uicheck-success:         #43A047;
+  --uicheck-info:            #1E88E5;
+
+  /* ── Category Accents ── */
+  --uicheck-slop:            #E53935;       /* AI tells — red */
+  --uicheck-quality:         #FB8C00;       /* Quality issues — amber */
+  --uicheck-clone:           #1E88E5;       /* Clone features — blue */
+
+  /* ── Dark Theme Surface ── */
+  --uicheck-bg:              #1a1a1a;
+  --uicheck-bg-subtle:       #252525;
+  --uicheck-bg-hover:        #2d2d2d;
+  --uicheck-bg-active:       #333333;
+  --uicheck-surface:         #2d2d2d;
+
+  /* ── Text ── */
+  --uicheck-text:            #ffffff;
+  --uicheck-text-dim:        #888888;
+  --uicheck-text-muted:      #666666;
+  --uicheck-border:          #333333;
+  --uicheck-border-light:    #444444;
+
+  /* ── Error Border for Anti-Pattern Highlights ── */
+  --uicheck-highlight-border-width:  2px;
+  --uicheck-highlight-border-style:  dashed;
+  --uicheck-highlight-border-color:  var(--uicheck-error);
+  --uicheck-highlight-bg:            var(--uicheck-error-bg);
+  --uicheck-highlight-border-radius: 4px;
+
+  /* ── Typography ── */
+  --uicheck-font-sans:  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --uicheck-font-mono:  ui-monospace, 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+
+  /* ── Spacing ── */
+  --uicheck-radius:     8px;
+  --uicheck-radius-sm:  4px;
+  --uicheck-radius-lg:  10px;
+}
+
+/* ── Injected Highlight Styles (applied to page DOM by detector) ── */
+
+.uichecker-highlight {
+  outline: var(--uicheck-highlight-border-width) var(--uicheck-highlight-border-style) var(--uicheck-highlight-border-color) !important;
+  outline-offset: 2px !important;
+  background-color: var(--uicheck-highlight-bg) !important;
+  border-radius: var(--uicheck-highlight-border-radius) !important;
+  transition: outline-color 0.15s ease, background-color 0.15s ease;
+}
+
+.uichecker-highlight-slop {
+  --uicheck-highlight-border-color: var(--uicheck-slop);
+  --uicheck-highlight-bg: rgba(229, 57, 53, 0.06);
+}
+
+.uichecker-highlight-quality {
+  --uicheck-highlight-border-color: var(--uicheck-quality);
+  --uicheck-highlight-bg: rgba(251, 140, 0, 0.06);
+}
+
+/* ── On-Page Floating Bar (injected by content script) ── */
+
+.uichecker-floating-bar {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 12px;
+  gap: 0;
+  background: #1a1a1a;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  color: #ffffff;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.uichecker-floating-bar.uichecker-bar-hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
+  pointer-events: none;
+}
+
+.uichecker-bar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 12px;
+}
+
+.uichecker-bar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #607D8B;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.uichecker-bar-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.uichecker-bar-divider {
+  width: 1px;
+  height: 24px;
+  background: #333333;
+  margin: 0 8px;
+}
+
+.uichecker-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.uichecker-bar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.uichecker-bar-btn-scan {
+  background: transparent;
+  color: #607D8B;
+  border: 1px solid #607D8B;
+}
+
+.uichecker-bar-btn-scan:hover {
+  background: rgba(96, 125, 139, 0.12);
+}
+
+.uichecker-bar-btn-clone {
+  background: transparent;
+  color: #1E88E5;
+  border: 1px solid #1E88E5;
+}
+
+.uichecker-bar-btn-clone:hover {
+  background: rgba(30, 136, 229, 0.1);
+}
+
+.uichecker-bar-btn-component {
+  background: transparent;
+  color: #888888;
+  border: 1px solid #333333;
+}
+
+.uichecker-bar-btn-component:hover {
+  color: #ffffff;
+  border-color: #888888;
+  background: #2d2d2d;
+}
+
+.uichecker-bar-count {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #E53935;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.uichecker-bar-close {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #888888;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.uichecker-bar-close:hover {
+  background: #2d2d2d;
+  color: #ffffff;
+}

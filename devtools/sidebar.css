@@ -1,0 +1,94 @@
+/**
+ * UI Checker — Sidebar Styles
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --uicheck-primary:       #607D8B;
+  --uicheck-primary-light: #90A4AE;
+  --uicheck-bg:            #1e1e1e;
+  --uicheck-bg-hover:      #2a2a2a;
+  --uicheck-text:          #f5f3ef;
+  --uicheck-text-dim:      #999999;
+  --uicheck-border:        #333333;
+  --uicheck-slop:          #E53935;
+  --uicheck-quality:       #FB8C00;
+  --uicheck-error-border:  #E53935;
+  --uicheck-error-bg:      rgba(229, 57, 53, 0.08);
+  --uicheck-radius:        6px;
+}
+
+body {
+  background: var(--uicheck-bg);
+  color: var(--uicheck-text);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.state {
+  padding: 12px;
+  color: var(--uicheck-text-dim);
+  text-align: center;
+}
+
+.state strong {
+  color: var(--uicheck-primary);
+}
+
+.finding {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--uicheck-border);
+  border-left: 2px solid var(--uicheck-error-border);
+  background: var(--uicheck-error-bg);
+}
+
+.finding-slop {
+  border-left-color: var(--uicheck-slop);
+}
+
+.finding-quality {
+  border-left-color: var(--uicheck-quality);
+}
+
+.finding-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.finding-name {
+  font-weight: 600;
+  flex: 1;
+}
+
+.finding-kind {
+  font-size: 9px;
+  text-transform: uppercase;
+  color: var(--uicheck-text-dim);
+  letter-spacing: 0.05em;
+}
+
+.marker {
+  color: var(--uicheck-slop);
+  margin-right: 4px;
+}
+
+.finding-detail {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--uicheck-text-dim);
+  margin-top: 2px;
+}
+
+.finding-description {
+  font-size: 10px;
+  color: var(--uicheck-text-dim);
+  opacity: 0.7;
+  margin-top: 2px;
+}

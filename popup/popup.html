@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <!-- ── Horizontal Bar Layout (matching Superdesign's compact design) ── -->
+  <div class="bar">
+
+    <!-- Left: Branding -->
+    <div class="bar-brand">
+      <span class="brand-icon">✓</span>
+      <span class="brand-name">UI Checker</span>
+    </div>
+
+    <!-- Divider -->
+    <div class="bar-divider"></div>
+
+    <!-- Center: Action Buttons -->
+    <div class="bar-actions">
+      <button class="bar-btn bar-btn-scan" id="btn-scan" title="Scan page for anti-patterns">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Scan</span>
+        <span class="scan-count" id="scan-count"></span>
+      </button>
+      <button class="bar-btn bar-btn-clone" id="btn-clone-page" title="Clone full page as downloadable HTML">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Clone page</span>
+      </button>
+      <button class="bar-btn bar-btn-component" id="btn-copy-component" title="Copy any component by clicking">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+        <span>Copy component</span>
+      </button>
+    </div>
+
+    <!-- Divider -->
+    <div class="bar-divider"></div>
+
+    <!-- Right: Utility -->
+    <div class="bar-utility">
+      <button class="bar-btn bar-btn-toggle" id="btn-toggle" title="Toggle overlay visibility">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+      <button class="bar-btn bar-btn-report" id="btn-copy-all" title="Copy findings report">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ── Expandable Detail Panel (slides down when scan count > 0) ── -->
+  <div class="detail-panel" id="detail-panel" style="display:none">
+    <div class="detail-header">
+      <span class="detail-count" id="detail-count">0</span>
+      <span class="detail-label" id="detail-label">anti-patterns found</span>
+    </div>
+    <div class="detail-breakdown" id="detail-breakdown"></div>
+  </div>
+
+  <!-- ── Toast Notification ── -->
+  <div class="popup-toast" id="popup-toast"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

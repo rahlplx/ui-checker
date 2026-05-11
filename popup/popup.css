@@ -1,0 +1,332 @@
+/**
+ * UI Checker v3 — Popup Styles
+ *
+ * EXACT LAYOUT: Matches Superdesign's horizontal bar design.
+ * Compact dark bar: brand left, actions center, utility right.
+ *
+ * All colors reference CSS Custom Properties (single source of truth).
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --uicheck-primary:         #607D8B;
+  --uicheck-primary-hover:   #455A64;
+  --uicheck-primary-light:   #90A4AE;
+  --uicheck-bg:              #1a1a1a;
+  --uicheck-bg-subtle:       #252525;
+  --uicheck-bg-hover:        #2d2d2d;
+  --uicheck-text:            #ffffff;
+  --uicheck-text-dim:        #888888;
+  --uicheck-border:          #333333;
+  --uicheck-radius:          8px;
+  --uicheck-slop:            #E53935;
+  --uicheck-quality:         #FB8C00;
+  --uicheck-clone:           #1E88E5;
+  --uicheck-success:         #43A047;
+  --uicheck-error:           #E53935;
+}
+
+body {
+  background: var(--uicheck-bg);
+  color: var(--uicheck-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  min-width: 460px;
+  overflow: hidden;
+}
+
+/* ── Horizontal Bar ── */
+
+.bar {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 12px;
+  gap: 0;
+  background: var(--uicheck-bg);
+}
+
+/* ── Brand Section ── */
+
+.bar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 12px;
+  flex-shrink: 0;
+}
+
+.brand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--uicheck-primary);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.brand-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--uicheck-text);
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+/* ── Divider ── */
+
+.bar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--uicheck-border);
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+/* ── Action Buttons ── */
+
+.bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.bar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--uicheck-radius);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s, border-color 0.15s;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.bar-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Scan button — outlined primary */
+.bar-btn-scan {
+  background: transparent;
+  color: var(--uicheck-primary);
+  border: 1px solid var(--uicheck-primary);
+}
+
+.bar-btn-scan:hover:not(:disabled) {
+  background: rgba(96, 125, 139, 0.12);
+}
+
+.bar-btn-scan.has-findings {
+  color: var(--uicheck-error);
+  border-color: var(--uicheck-error);
+}
+
+.bar-btn-scan.has-findings:hover:not(:disabled) {
+  background: rgba(229, 57, 53, 0.1);
+}
+
+/* Clone button — outlined blue */
+.bar-btn-clone {
+  background: transparent;
+  color: var(--uicheck-clone);
+  border: 1px solid var(--uicheck-clone);
+}
+
+.bar-btn-clone:hover:not(:disabled) {
+  background: rgba(30, 136, 229, 0.1);
+}
+
+/* Component button — outlined subtle */
+.bar-btn-component {
+  background: transparent;
+  color: var(--uicheck-text-dim);
+  border: 1px solid var(--uicheck-border);
+}
+
+.bar-btn-component:hover:not(:disabled) {
+  color: var(--uicheck-text);
+  border-color: var(--uicheck-text-dim);
+  background: var(--uicheck-bg-hover);
+}
+
+/* Scan count badge (inside scan button) */
+.scan-count {
+  display: none;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--uicheck-error);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.scan-count.visible {
+  display: inline-block;
+}
+
+/* ── Utility Section ── */
+
+.bar-utility {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.bar-btn-toggle,
+.bar-btn-report {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: var(--uicheck-radius);
+  background: transparent;
+  color: var(--uicheck-text-dim);
+  border: 1px solid transparent;
+}
+
+.bar-btn-toggle:hover,
+.bar-btn-report:hover {
+  background: var(--uicheck-bg-hover);
+  color: var(--uicheck-text);
+  border-color: var(--uicheck-border);
+}
+
+.bar-btn-toggle.overlays-hidden {
+  color: var(--uicheck-text-dim);
+  opacity: 0.5;
+}
+
+/* ── Detail Panel (expandable below bar) ── */
+
+.detail-panel {
+  background: var(--uicheck-bg-subtle);
+  border-top: 1px solid var(--uicheck-border);
+  padding: 12px 16px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.detail-header {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.detail-count {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--uicheck-error);
+  line-height: 1;
+}
+
+.detail-count.clean {
+  color: var(--uicheck-success);
+}
+
+.detail-label {
+  font-size: 12px;
+  color: var(--uicheck-text-dim);
+}
+
+.detail-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  padding: 2px 0;
+}
+
+.breakdown-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.breakdown-dot.slop {
+  background: var(--uicheck-slop);
+}
+
+.breakdown-dot.quality {
+  background: var(--uicheck-quality);
+}
+
+.breakdown-name {
+  flex: 1;
+  color: var(--uicheck-text);
+}
+
+.breakdown-count {
+  color: var(--uicheck-text-dim);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Toast ── */
+
+.popup-toast {
+  position: fixed;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.popup-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.popup-toast.success {
+  background: var(--uicheck-success);
+  color: white;
+}
+
+.popup-toast.error {
+  background: var(--uicheck-error);
+  color: white;
+}
+
+.popup-toast.info {
+  background: var(--uicheck-primary);
+  color: white;
+}

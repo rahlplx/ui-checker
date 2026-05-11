@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <span class="logo">✓</span>
+      <h1>UI Checker</h1>
+    </div>
+    <div class="toolbar-right">
+      <button class="tool-btn" id="btn-clone-page" title="Clone page">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+      <button class="tool-btn" id="btn-copy-component" title="Copy component">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+      </button>
+      <button class="tool-btn" id="btn-copy-all" title="Copy all findings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+      <button class="tool-btn" id="btn-settings" title="Settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="settings-container" style="display:none">
+    <div id="settings-list"></div>
+    <div class="setting-row">
+      <span class="setting-label">Line length</span>
+      <div class="setting-segmented" id="line-length-mode">
+        <button data-value="strict">80ch</button>
+        <button data-value="lax">120ch</button>
+      </div>
+    </div>
+    <div class="setting-row">
+      <span class="setting-label">Spotlight blur</span>
+      <label class="setting-switch">
+        <input type="checkbox" id="spotlight-blur-toggle">
+        <span class="setting-switch-track"></span>
+      </label>
+    </div>
+    <div class="setting-row">
+      <span class="setting-label">Auto-scan</span>
+      <div class="setting-segmented" id="auto-scan-mode">
+        <button data-value="panel">Panel</button>
+        <button data-value="devtools">DevTools</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="scan-bar">
+    <span class="badge" id="badge">0</span>
+    <span class="scan-label" id="scan-label">anti-patterns</span>
+    <div class="scan-actions">
+      <button class="scan-btn" id="btn-rescan">Scan page</button>
+      <button class="scan-btn" id="btn-toggle">Hide overlays</button>
+    </div>
+  </div>
+
+  <div id="findings-container">
+    <div class="empty-state" id="empty-state" style="display:none">
+      <div class="empty-icon">✓</div>
+      <div class="empty-title">No anti-patterns found</div>
+      <div class="empty-hint">Click "Scan page" to check for issues</div>
+    </div>
+  </div>
+
+  <script src="panel.js"></script>
+</body>
+</html>
