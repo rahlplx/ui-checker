@@ -15,7 +15,7 @@ CRX3 Format Reference (Chrome Extensions Official Docs):
     [N bytes] CRX3 header (protobuf-encoded CrxFileHeader)
     [rest]    ZIP archive of the extension
 
-  The CRX3 header protobuf schema:
+  The CRX3 header protobuf schema (from Chromium source: components/crx_file/crx3.proto):
     message AsymmetricKeyProof {
       optional bytes public_key = 1;
       optional bytes signature = 2;
@@ -25,10 +25,14 @@ CRX3 Format Reference (Chrome Extensions Official Docs):
     }
     message CrxFileHeader {
       repeated AsymmetricKeyProof sha256_with_rsa = 2;
-      optional SignedData signed_header_data = 3;
+      optional SignedData signed_header_data = 10000;  // NOTE: field 10000, NOT 3!
     }
 
-  Signature is computed over: b"CRX3 Signed Data" + serialized SignedData + ZIP bytes
+  IMPORTANT: signed_header_data is field number 10000 in Chromium's crx3.proto.
+  This is a deliberate choice to avoid accidental conflicts with older CRX2 fields.
+
+  Signature is computed over:
+    b"CRX3 SignedData\x00" + uint32_LE(len(signed_data_proto)) + signed_data_proto + ZIP bytes
   Using SHA-256 with RSA (RSASSA-PKCS1-v1_5 with SHA-256)
 
 Requirements:
@@ -86,10 +90,10 @@ def encode_message_field(field_number, message_bytes):
 
 def encode_crx3_header(public_key_der, signature, crx_id):
     """
-    Build the CRX3 CrxFileHeader protobuf:
+    Build the CRX3 CrxFileHeader protobuf (from Chromium crx3.proto):
       message CrxFileHeader {
         repeated AsymmetricKeyProof sha256_with_rsa = 2;
-        optional SignedData signed_header_data = 3;
+        optional SignedData signed_header_data = 10000;  // NOT 3!
       }
       message AsymmetricKeyProof {
         optional bytes public_key = 1;
@@ -106,7 +110,9 @@ def encode_crx3_header(public_key_der, signature, crx_id):
     signed_data = encode_bytes_field(1, crx_id)
 
     # CrxFileHeader
-    header = encode_message_field(2, proof) + encode_message_field(3, signed_data)
+    # CRITICAL: signed_header_data is field 10000, NOT 3.
+    # See Chromium source: components/crx_file/crx3.proto
+    header = encode_message_field(2, proof) + encode_message_field(10000, signed_data)
     return header
 
 
@@ -150,8 +156,11 @@ def sign_crx3(zip_bytes, private_key):
     Sign the ZIP content for CRX3 format.
     Returns (public_key_der, signature, crx_id).
 
-    The signature is over: b"CRX3 Signed Data" + serialized SignedData + zip_bytes
+    The signature is over:
+      b"CRX3 SignedData\0" + uint32_LE(len(signed_data_proto)) + signed_data_proto + zip_bytes
     Algorithm: RSASSA-PKCS1-v1_5 with SHA-256
+
+    See Chromium source: components/crx_file/crx_verifier.cc
     """
     from cryptography.hazmat.primitives import hashes, serialization
     from cryptography.hazmat.primitives.asymmetric import padding
@@ -170,8 +179,10 @@ def sign_crx3(zip_bytes, private_key):
     # Build the SignedData protobuf for signing
     signed_data_proto = encode_bytes_field(1, crx_id)
 
-    # Compute signature over: "CRX3 Signed Data" + signed_data + zip
-    message = b"CRX3 Signed Data" + signed_data_proto + zip_bytes
+    # Compute signature over: "CRX3 SignedData\0" + len(signed_data) as uint32 LE + signed_data + zip
+    # See Chromium source: components/crx_file/crx_verifier.cc
+    signed_header_size = struct.pack('<I', len(signed_data_proto))
+    message = b"CRX3 SignedData\x00" + signed_header_size + signed_data_proto + zip_bytes
 
     signature = private_key.sign(
         message,
