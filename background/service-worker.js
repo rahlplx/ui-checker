@@ -251,19 +251,30 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 // Track which tabs have DevTools open
 const devtoolsTabs = new Set();
 
-async function tearDownTab(tabId) {
+/**
+ * PATTERN 5 (Lifecycle Guard): DevTools disconnect handler.
+ *
+ * DevTools is a TRANSIENT UI. Closing the DevTools panel or sidebar
+ * should NOT delete the data collected for that tab. The findings,
+ * badge count, and injection flags must persist as long as the tab
+ * exists — the user might re-open DevTools and expect to see them.
+ *
+ * This handler ONLY cleans up the communication pipes (devtoolsTabs
+ * membership, panelPorts entries). It also sends 'remove' to the
+ * content script to clean up visual overlays (since nobody is
+ * viewing them anymore), but it does NOT touch tabState.
+ *
+ * The ONLY place tabState is deleted is chrome.tabs.onRemoved —
+ * that's the true end-of-session signal.
+ */
+async function onDevtoolsDisconnect(tabId) {
   devtoolsTabs.delete(tabId);
+  panelPorts.delete(tabId);
+  // Ask the content script to remove visual overlays (no one is watching),
+  // but do NOT wipe findings/injected/csInjected — the tab still exists.
   try {
     await chrome.tabs.sendMessage(tabId, { action: 'remove' });
   } catch { /* tab might be closed */ }
-  const state = tabState.get(tabId);
-  if (state) {
-    state.findings = [];
-    state.injected = false;
-    state.csInjected = false;
-  }
-  updateBadge(tabId);
-  panelPorts.delete(tabId);
 }
 
 // Handle long-lived connections from DevTools pages and panels
@@ -277,7 +288,9 @@ chrome.runtime.onConnect.addListener((port) => {
     });
 
     port.onDisconnect.addListener(() => {
-      tearDownTab(tabId);
+      // PATTERN 5: DevTools closed → only tear down communication pipes,
+      // NOT the tab's data. State persists until the tab itself is closed.
+      onDevtoolsDisconnect(tabId);
     });
   }
 
@@ -348,8 +361,14 @@ chrome.webNavigation?.onCompleted?.addListener((details) => {
   }
 });
 
-// Clean up state when tabs close
+// ── PATTERN 5 (Lifecycle Guard): Tab closure is the ONLY end-of-session ──
+//
+// DevTools disconnect ≠ session end. The user might close DevTools and
+// re-open it later, expecting their findings to still be there. Only when
+// the actual browser tab is closed do we truly discard all state.
 chrome.tabs.onRemoved.addListener((tabId) => {
+  devtoolsTabs.delete(tabId);
   tabState.delete(tabId);
   panelPorts.delete(tabId);
+  chrome.action.setBadgeText({ text: '', tabId }).catch(() => {});
 });
