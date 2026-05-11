@@ -262,7 +262,7 @@
           success: true,
           message: 'Component copied to clipboard',
           copiedToClipboard: true,
-        }, '*');
+        }, location.origin);
       }).catch(() => {
         const textarea = document.createElement('textarea');
         textarea.value = html;
@@ -281,7 +281,7 @@
           success: true,
           message: 'Component copied to clipboard',
           copiedToClipboard: true,
-        }, '*');
+        }, location.origin);
       });
     } catch (err) {
       showToast(`Extraction failed: ${err.message}`, false);

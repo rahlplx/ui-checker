@@ -219,14 +219,14 @@
         filename: filename,
         success: true,
         message: 'Page cloned successfully!',
-      }, '*');
+      }, location.origin);
 
     } catch (err) {
       window.postMessage({
         source: 'uichecker-clone-result',
         success: false,
         message: `Clone failed: ${err.message}`,
-      }, '*');
+      }, location.origin);
     }
   }
 

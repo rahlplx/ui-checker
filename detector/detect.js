@@ -2264,7 +2264,11 @@ if (IS_BROWSER) {
   };
 
   let firstScanDone = false;
+  let scanning = false;  // Mutex: prevent overlapping scan() calls
   const scan = function() {
+    if (scanning) return;   // Dedup: two rapid 'scan' commands → only one scan runs
+    scanning = true;
+    try {
     for (const o of overlays) o.remove();
     overlays.length = 0;
     visibilityObserver.disconnect();
@@ -2359,13 +2363,14 @@ if (IS_BROWSER) {
         source: 'uichecker-results',
         findings: serializeFindings(allFindings),
         count: allFindings.length,
-      }, '*');
+      }, location.origin);
     }
 
     // After this scan completes, all subsequent reveals are instant (no stagger, no animation)
     setTimeout(() => { firstScanDone = true; }, 1000);
 
     return allFindings;
+    } finally { scanning = false; }
   };
 
   if (EXTENSION_MODE) {
@@ -2381,7 +2386,7 @@ if (IS_BROWSER) {
       if (e.data.action === 'toggle-overlays') {
         const visible = !document.body.classList.contains('uichecker-hidden');
         document.body.classList.toggle('uichecker-hidden', visible);
-        window.postMessage({ source: 'uichecker-overlays-toggled', visible: !visible }, '*');
+        window.postMessage({ source: 'uichecker-overlays-toggled', visible: !visible }, location.origin);
       }
       if (e.data.action === 'remove') {
         for (const o of overlays) o.remove();
@@ -2426,7 +2431,7 @@ if (IS_BROWSER) {
         }
       }
     });
-    window.postMessage({ source: 'uichecker-ready' }, '*');
+    window.postMessage({ source: 'uichecker-ready' }, location.origin);
   } else {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => setTimeout(scan, 100));

@@ -30,27 +30,27 @@
       sendResponse({ ok: true });
     }
     else if (msg.action === 'toggle-overlays') {
-      window.postMessage({ source: 'uichecker-command', action: 'toggle-overlays' }, '*');
+      window.postMessage({ source: 'uichecker-command', action: 'toggle-overlays' }, location.origin);
       sendResponse({ ok: true });
     }
     else if (msg.action === 'remove') {
-      window.postMessage({ source: 'uichecker-command', action: 'remove' }, '*');
+      window.postMessage({ source: 'uichecker-command', action: 'remove' }, location.origin);
       detectorInjected = false;
       sendResponse({ ok: true });
     }
     else if (msg.action === 'highlight') {
-      window.postMessage({ source: 'uichecker-command', action: 'highlight', selector: msg.selector }, '*');
+      window.postMessage({ source: 'uichecker-command', action: 'highlight', selector: msg.selector }, location.origin);
       sendResponse({ ok: true });
     }
     else if (msg.action === 'unhighlight') {
-      window.postMessage({ source: 'uichecker-command', action: 'unhighlight' }, '*');
+      window.postMessage({ source: 'uichecker-command', action: 'unhighlight' }, location.origin);
       sendResponse({ ok: true });
     }
 
     // Clone commands
     else if (msg.action === 'clone-page') {
       injectCloneEngine(() => {
-        window.postMessage({ source: 'uichecker-command', action: 'clone-page' }, '*');
+        window.postMessage({ source: 'uichecker-command', action: 'clone-page' }, location.origin);
       });
       sendResponse({ ok: true });
     }
@@ -166,7 +166,7 @@
     // PATTERN 5: Soft reset — deactivate picker to remove its listeners,
     // notify service worker (clear stale findings, keep injected flags),
     // then re-scan after the DOM settles.
-    window.postMessage({ source: 'uichecker-command', action: 'deactivate-component-picker' }, '*');
+    window.postMessage({ source: 'uichecker-command', action: 'deactivate-component-picker' }, location.origin);
     chrome.runtime.sendMessage({ action: 'spa-navigate' }).catch(() => {});
     if (detectorInjected) {
       setTimeout(sendScanCommand, 500);
@@ -206,7 +206,7 @@
   function sendScanCommand() {
     const msg = { source: 'uichecker-command', action: 'scan' };
     if (scanConfig) msg.config = scanConfig;
-    window.postMessage(msg, '*');
+    window.postMessage(msg, location.origin);
   }
 
   function injectDetectorAndScan() {
@@ -260,7 +260,7 @@
   function injectPicker() {
     if (pickerInjected) {
       // Re-activate picker
-      window.postMessage({ source: 'uichecker-command', action: 'start-component-picker' }, '*');
+      window.postMessage({ source: 'uichecker-command', action: 'start-component-picker' }, location.origin);
       return;
     }
     // Pattern 4: Ensure theme.css is loaded for CSS variable access
