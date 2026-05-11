@@ -231,9 +231,11 @@
   }
 
   // ─── Command Listener ────────────────────────────────────────────────────
+  // SECURITY (Pattern 7): Validate message origin and shape before processing.
 
   window.addEventListener('message', (e) => {
-    if (e.source !== window || !e.data || e.data.source !== 'uichecker-command') return;
+    if (e.source !== window || !e.data || typeof e.data !== 'object') return;
+    if (e.data.source !== 'uichecker-command') return;
     if (e.data.action === 'clone-page') {
       cloneFullPage();
     }

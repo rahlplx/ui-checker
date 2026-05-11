@@ -2370,8 +2370,10 @@ if (IS_BROWSER) {
 
   if (EXTENSION_MODE) {
     // Extension mode: listen for commands, don't auto-scan
+    // SECURITY (Pattern 7): Validate message origin and shape before processing.
     window.addEventListener('message', (e) => {
-      if (e.source !== window || !e.data || e.data.source !== 'uichecker-command') return;
+      if (e.source !== window || !e.data || typeof e.data !== 'object') return;
+      if (e.data.source !== 'uichecker-command') return;
       if (e.data.action === 'scan') {
         if (e.data.config) window.__UI_CHECKER_CONFIG__ = e.data.config;
         scan();

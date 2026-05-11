@@ -276,6 +276,8 @@ function uniqueSkillsForFindings(findings) {
   return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([s]) => s);
 }
 
+// SECURITY (Pattern 7): This eval contains NO user-supplied data — pure static IIFE.
+// Safe by construction. No parameterization needed.
 function getInspectedUrl() {
   return new Promise((resolve) => {
     chrome.devtools.inspectedWindow.eval(
@@ -499,10 +501,14 @@ function renderFindings(findings) {
 }
 
 function inspectElement(selector) {
-  const escaped = selector.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  // SECURITY (Pattern 7): Use JSON.stringify for selector injection into eval.
+  // Manual escaping (replace + template literal) is the "Death Star exhaust port" —
+  // a malicious selector like `']; alert(1); '//` breaks out of the string literal.
+  // JSON.stringify guarantees the value is a valid JS string literal with no escape risk.
+  const safeSelector = JSON.stringify(selector);
   chrome.devtools.inspectedWindow.eval(
     `(function() {
-      var el = document.querySelector('${escaped}');
+      var el = document.querySelector(${safeSelector});
       if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); inspect(el); }
     })()`
   );

@@ -45,6 +45,9 @@ function refreshForCurrentSelection() {
     return;
   }
 
+  // SECURITY (Pattern 7): JSON.stringify(selectors) safely serializes the array
+  // into the eval string. Selectors originate from our own serializeFindings(),
+  // but JSON.stringify guarantees no string breakout even if a selector is adversarial.
   const code = `(function() {
     var sels = ${JSON.stringify(selectors)};
     var matched = [];

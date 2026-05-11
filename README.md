@@ -98,7 +98,7 @@ All colors use CSS Custom Properties defined in `theme.css`:
 
 ## Architectural Patterns
 
-Six patterns govern the extension's architecture. Violating any of these introduces the bugs they were designed to prevent:
+Seven patterns govern the extension's architecture. Violating any of these introduces the bugs they were designed to prevent:
 
 | Pattern | Rule | Key File |
 |---|---|---|
@@ -108,6 +108,7 @@ Six patterns govern the extension's architecture. Violating any of these introdu
 | **Shared Token** | All brand colors come from `theme.css :root` via `getComputedStyle()` / `var(--uicheck-*)` | `theme.css`, `detect.js`, `clone-engine.js`, `component-picker.js` |
 | **Lifecycle Guard** | `tabState.delete()` only in `chrome.tabs.onRemoved`; DevTools disconnect only cleans pipes | `service-worker.js` |
 | **Brand Purge** | Zero legacy project names in source; `brand-cleanse.js` contains migration mappings only | All files |
+| **Input Validation** | `inspectedWindow.eval()` uses `JSON.stringify()` for data injection (never template literals); all `message` listeners validate `e.source === window`, `typeof e.data === 'object'`, and `e.data.source.startsWith('uichecker-')` | `panel.js`, `sidebar.js`, `content-script.js`, `detect.js`, `clone-engine.js`, `component-picker.js` |
 
 ## License
 

@@ -63,9 +63,15 @@
   });
 
   // ─── Results Listener ──────────────────────────────────────────────────
+  // SECURITY (Pattern 7): Validate message origin and shape before processing.
+  // - e.source !== window → reject cross-origin iframes
+  // - typeof e.data !== 'object' → reject primitive data
+  // - !e.data.source → reject messages without our source prefix
+  // - e.data.source must start with 'uichecker-' to be from our scripts
 
   window.addEventListener('message', (e) => {
-    if (e.source !== window || !e.data) return;
+    if (e.source !== window || !e.data || typeof e.data !== 'object') return;
+    if (!e.data.source || !e.data.source.startsWith('uichecker-')) return;
 
     // Anti-pattern results from detector
     if (e.data.source === 'uichecker-results') {
