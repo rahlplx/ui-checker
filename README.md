@@ -4,7 +4,7 @@ Detect UI anti-patterns, clone pages, and extract components — all in one Chro
 
 ## Features
 
-- **Anti-Pattern Scanner** — 24 deterministic checks across two categories:
+- **Anti-Pattern Scanner** — 25 deterministic checks across two categories:
   - **AI tells** (slop): side-tab borders, overused fonts, gradient text, AI color palettes, nested cards, dark glow, bounce easing, and more
   - **Quality issues**: low contrast, cramped padding, tight line height, tiny text, skipped headings, and more
 - **Clone Full Page** — Captures the computed DOM, inlines all CSS, base64-encodes images, and downloads as a single HTML file (no external redirects)
@@ -26,7 +26,7 @@ uichecker-v3/
 │   └── component-picker.js    # Hover + click component extractor (MAIN world)
 ├── detector/
 │   ├── detect.js              # 3-phase anti-pattern engine (HTML Regex → CSSOM → DOM)
-│   └── antipatterns.json      # Rule ID → name/description map (24 rules)
+│   └── antipatterns.json      # Rule ID → name/description map (25 rules)
 ├── devtools/
 │   ├── devtools.html          # DevTools entry point
 │   ├── devtools.js            # Creates panel + sidebar
@@ -50,9 +50,9 @@ Three-phase detection runs in the page's MAIN world for full DOM/CSSOM access:
 2. **CSSOM** — Reads `document.styleSheets` for computed rule analysis
 3. **DOM Walk** — Flat `querySelectorAll('*')` loop checking `getComputedStyle()` on every visible element
 
-### Off-By-One Fix (v3)
+### Detection Source-of-Truth (v3)
 
-The detector runs both element-level DOM checks and page-level HTML regex checks. When the same anti-pattern type is found at both levels, the page-level finding is a duplicate. The service worker's `deduplicateFindings()` removes page-level findings whose type was already detected at the element level.
+In browser context, the detector runs ONLY DOM/CSSOM checks (Tier 1). HTML regex checks (`checkHtmlPatterns`) are disabled via `if (!IS_BROWSER)` guard, preventing double-counting. The service worker's `deduplicateFindings()` remains as defense-in-depth.
 
 ## Clone Engine
 
@@ -95,6 +95,19 @@ All colors use CSS Custom Properties defined in `theme.css`:
 | `--uicheck-clone` | `#1E88E5` | Clone features (blue) |
 | `--uicheck-error` | `#E53935` | Error states |
 | `--uicheck-success` | `#43A047` | Success states |
+
+## Architectural Patterns
+
+Six patterns govern the extension's architecture. Violating any of these introduces the bugs they were designed to prevent:
+
+| Pattern | Rule | Key File |
+|---|---|---|
+| **Idempotency Shield** | Every MAIN-world script must return early if `window.__UI_CHECKER_*_LOADED__` is set | `detect.js`, `clone-engine.js`, `component-picker.js`, `content-script.js` |
+| **Source-of-Truth** | In browser context, only DOM/CSSOM checks run; regex is `!IS_BROWSER`-gated | `detect.js` |
+| **Permission Proxy** | MAIN-world scripts never call privileged APIs directly; they postMessage → content script → service worker | `clone-engine.js` → `content-script.js` → `service-worker.js` |
+| **Shared Token** | All brand colors come from `theme.css :root` via `getComputedStyle()` / `var(--uicheck-*)` | `theme.css`, `detect.js`, `clone-engine.js`, `component-picker.js` |
+| **Lifecycle Guard** | `tabState.delete()` only in `chrome.tabs.onRemoved`; DevTools disconnect only cleans pipes | `service-worker.js` |
+| **Brand Purge** | Zero legacy project names in source; `brand-cleanse.js` contains migration mappings only | All files |
 
 ## License
 
