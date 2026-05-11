@@ -145,18 +145,45 @@
     chrome.runtime.sendMessage({ action: 'page-pointer-active' }).catch(() => {});
   }, { passive: true, capture: true });
 
-  // ─── SPA Navigation Detection ──────────────────────────────────────────
+  // ─── SPA Navigation Detection (PATTERN 5: Lifecycle Guard) ────────────
+  //
+  // F21: Duplicate scans during SPA transitions are caused by missing
+  // pushState/replaceState interception. Most SPA routers (React Router,
+  // Vue Router, Next.js) use history.pushState() which fires NO events.
+  // We monkey-patch the History API to call the existing nav handler.
+  //
+  // F22: Memory leaks occur when component picker event listeners persist
+  // across navigations. We deactivate the picker before re-scanning.
+  //
+  // "Human Compression": ~10-line proxy that hooks into the existing
+  // onPossibleNavigation() → sendScanCommand() pipeline. No new 100-line
+  // navigation listener needed.
 
   let lastUrl = location.href;
   function onPossibleNavigation() {
     if (location.href === lastUrl) return;
     lastUrl = location.href;
+    // PATTERN 5: Soft reset — deactivate picker to remove its listeners,
+    // notify service worker (clear stale findings, keep injected flags),
+    // then re-scan after the DOM settles.
+    window.postMessage({ source: 'uichecker-command', action: 'deactivate-component-picker' }, '*');
+    chrome.runtime.sendMessage({ action: 'spa-navigate' }).catch(() => {});
     if (detectorInjected) {
       setTimeout(sendScanCommand, 500);
     }
   }
   window.addEventListener('popstate', onPossibleNavigation);
   window.addEventListener('hashchange', onPossibleNavigation);
+
+  // PATTERN 5 (Lifecycle Guard): History API proxy for SPA detection.
+  // pushState/replaceState fire NO browser events. Monkey-patch them to
+  // call the existing onPossibleNavigation() which handles the soft-reset
+  // and re-scan pipeline. This is the ~10-line solution, not a 100-line
+  // MutationObserver or URL polling interval.
+  const _pushState = history.pushState;
+  const _replaceState = history.replaceState;
+  history.pushState = function() { _pushState.apply(this, arguments); onPossibleNavigation(); };
+  history.replaceState = function() { _replaceState.apply(this, arguments); onPossibleNavigation(); };
 
   // ─── Theme Injection (Pattern 4: Shared Token) ─────────────────────────
   // Inject theme.css as a <link> BEFORE any MAIN-world scripts so that

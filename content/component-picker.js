@@ -328,5 +328,11 @@
     if (e.data.action === 'start-component-picker') {
       activatePicker();
     }
+    // PATTERN 5 (Lifecycle Guard): Deactivate picker on SPA navigation.
+    // Prevents pointermove/click/keydown listeners from leaking across routes.
+    // Called by content-script.js onPossibleNavigation() before re-scan.
+    if (e.data.action === 'deactivate-component-picker') {
+      deactivatePicker();
+    }
   });
 })();

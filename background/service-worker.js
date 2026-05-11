@@ -248,6 +248,24 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     sendResponse({ ok: true });
   }
 
+  // ── PATTERN 5 (Lifecycle Guard): SPA Navigation Soft Reset (F21 & F22) ──
+  //
+  // Unlike webNavigation.onCompleted (full page load → hard reset),
+  // SPA navigations keep content scripts and detector injected.
+  // We only clear stale findings and notify panels. The content script
+  // handles picker deactivation and triggers a re-scan after DOM settles.
+  // injected/csInjected flags are PRESERVED — no re-injection needed.
+  else if (msg.action === 'spa-navigate' && tabId) {
+    const state = tabState.get(tabId);
+    if (state) {
+      state.findings = [];
+      // Do NOT reset state.injected or state.csInjected — scripts still loaded
+      updateBadge(tabId);
+      notifyPanels(tabId, { action: 'navigated' });
+    }
+    sendResponse({ ok: true });
+  }
+
   return true;
 });
 
