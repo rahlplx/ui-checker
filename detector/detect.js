@@ -2247,7 +2247,7 @@ if (IS_BROWSER) {
 
   const printSummary = function(allFindings) {
     if (allFindings.length === 0) {
-      console.log('%c[uichecker] No anti-patterns found.', 'color: #22c55e; font-weight: bold');
+      console.log('%c[uichecker] No anti-patterns found.', `color: ${getThemeColor('--uicheck-success', '#43A047')}; font-weight: bold`);
       return;
     }
     console.group(

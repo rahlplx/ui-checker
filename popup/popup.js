@@ -1,8 +1,7 @@
 /**
  * UI Checker v3 — Popup Controller
  *
- * Horizontal bar layout matching Superdesign's compact design.
- * Brand left, actions center, utility right.
+ * Horizontal bar layout — brand left, actions center, utility right.
  *
  * All features unified in one horizontal flow:
  *   Scan → Clone page → Copy component → Toggle → Report

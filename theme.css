@@ -2,6 +2,10 @@
  * UI Checker v3 — Unified Design System
  * CSS Custom Properties for global brand management.
  *
+ * Change the brand palette by modifying ONLY the :root block below.
+ * All extension UI (popup, panel, sidebar) and injected DOM highlights
+ * inherit from these variables automatically.
+ *
  * Brand: Material Blue Grey (#607D8B)
  *
  * This file serves DUAL purposes:
@@ -97,12 +101,12 @@
   height: 48px;
   padding: 0 12px;
   gap: 0;
-  background: #1a1a1a;
+  background: var(--uicheck-bg);
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--uicheck-font-sans);
   font-size: 13px;
-  color: #ffffff;
+  color: var(--uicheck-text);
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
@@ -126,7 +130,7 @@
   width: 24px;
   height: 24px;
   border-radius: 6px;
-  background: #607D8B;
+  background: var(--uicheck-primary);
   color: white;
   font-size: 14px;
   font-weight: 700;
@@ -135,14 +139,14 @@
 .uichecker-bar-name {
   font-size: 13px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--uicheck-text);
   white-space: nowrap;
 }
 
 .uichecker-bar-divider {
   width: 1px;
   height: 24px;
-  background: #333333;
+  background: var(--uicheck-border);
   margin: 0 8px;
 }
 
@@ -171,8 +175,8 @@
 
 .uichecker-bar-btn-scan {
   background: transparent;
-  color: #607D8B;
-  border: 1px solid #607D8B;
+  color: var(--uicheck-primary);
+  border: 1px solid var(--uicheck-primary);
 }
 
 .uichecker-bar-btn-scan:hover {
@@ -181,8 +185,8 @@
 
 .uichecker-bar-btn-clone {
   background: transparent;
-  color: #1E88E5;
-  border: 1px solid #1E88E5;
+  color: var(--uicheck-clone);
+  border: 1px solid var(--uicheck-clone);
 }
 
 .uichecker-bar-btn-clone:hover {
@@ -191,14 +195,14 @@
 
 .uichecker-bar-btn-component {
   background: transparent;
-  color: #888888;
-  border: 1px solid #333333;
+  color: var(--uicheck-text-dim);
+  border: 1px solid var(--uicheck-border);
 }
 
 .uichecker-bar-btn-component:hover {
-  color: #ffffff;
-  border-color: #888888;
-  background: #2d2d2d;
+  color: var(--uicheck-text);
+  border-color: var(--uicheck-text-dim);
+  background: var(--uicheck-surface);
 }
 
 .uichecker-bar-count {
@@ -206,7 +210,7 @@
   height: 18px;
   padding: 0 5px;
   border-radius: 9px;
-  background: #E53935;
+  background: var(--uicheck-error);
   color: white;
   font-size: 10px;
   font-weight: 700;
@@ -221,7 +225,7 @@
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
-  color: #888888;
+  color: var(--uicheck-text-dim);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -230,6 +234,6 @@
 }
 
 .uichecker-bar-close:hover {
-  background: #2d2d2d;
-  color: #ffffff;
+  background: var(--uicheck-surface);
+  color: var(--uicheck-text);
 }
