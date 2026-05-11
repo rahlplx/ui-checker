@@ -3,6 +3,7 @@
   "name": "UI Checker",
   "description": "Detect UI anti-patterns, clone pages, and extract components — all in one tool",
   "version": "3.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxVbtl6ZoX5Rbv8Lih4hNXCtoOz352kuYcaLF7eZV1iytz5mQOEfc6aMhu6NkY1ChS0/gIBha6zsrT9JmqY0r07447kiB+X2YCUzPPwkJH/hTCuTrvyKDksWrVMhobQ/bRe792ln+SvhMWS2VfCH77ZuJKCtX0yyD9eXbkTDiHryvPRQvHfPHo020ZkoLZERywQZ5lC61OIg842c0CQVO4NnM/UXHuelMuoV16olC+q3nQi6xRwNBP4zHW06FQkXBwQ1h0WoJXGekLKdReX8JYXggsUfYT1pceVvYtESQDZoPG7a52UHUNEJaSVKzeNPE8g3KL1Wq3CqN6DuHTjtIaQIDAQAB",
   "permissions": [
     "activeTab",
     "scripting",
