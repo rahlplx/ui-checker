@@ -94,12 +94,16 @@
     }
 
     // Clone engine results — forward HTML to service worker for download
+    // IMPORTANT: clone-engine.js runs in MAIN world where chrome.runtime is
+    // NOT available. It bridges via window.postMessage. We (content script)
+    // then relay to the service worker which has chrome.downloads access.
+    // This is Pattern 3 (Permission Proxy) in action.
     if (e.data.source === 'uichecker-clone-result') {
       if (e.data.success && e.data.html) {
-        // Use chrome.downloads API via service worker — NO page redirect
+        // Relay to service worker for privileged download (NO page redirect)
         chrome.runtime.sendMessage({
-          action: 'clone-download',
-          html: e.data.html,
+          action: 'perform-download',
+          data: e.data.html,
           filename: e.data.filename,
         }).catch(() => {});
       } else {

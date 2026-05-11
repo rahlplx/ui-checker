@@ -19,7 +19,7 @@ uichecker-v3/
 ├── manifest.json              # Manifest V3 entry point
 ├── theme.css                  # CSS Custom Properties design system
 ├── background/
-│   └── service-worker.js      # Message hub, badge, dedup, clone-download
+│   └── service-worker.js      # Message hub, badge, dedup, perform-download
 ├── content/
 │   ├── content-script.js      # Bridge: extension ↔ page context
 │   ├── clone-engine.js        # Full-page clone (MAIN world)

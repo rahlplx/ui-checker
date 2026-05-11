@@ -202,12 +202,22 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     sendResponse({ ok: true });
   }
 
-  // ── Clone Result (download via chrome.downloads, NOT page redirect) ──
+  // ── Pattern 3: Permission Proxy — Download via chrome.downloads ──
+  //
+  // Content scripts are "untrusted" by CSP. They cannot create <a> tags
+  // or trigger downloads in the page context. The Service Worker is the
+  // ONLY context that can reliably call chrome.downloads.download().
+  //
+  // Message flow:
+  //   clone-engine.js (MAIN world)
+  //     → window.postMessage({ source: 'uichecker-clone-result', html, filename })
+  //   content-script.js (isolated world)
+  //     → chrome.runtime.sendMessage({ action: 'perform-download', data, filename })
+  //   service-worker.js (this file)
+  //     → chrome.downloads.download({ url: dataUrl, filename, saveAs: true })
 
-  else if (msg.action === 'clone-download' && tabId) {
-    // Use chrome.downloads API to save the cloned HTML directly.
-    // This ensures no redirect to any external website.
-    const html = msg.html;
+  else if (msg.action === 'perform-download' && tabId) {
+    const html = msg.data;
     const filename = msg.filename || 'page-clone.html';
 
     // Create a data URL from the HTML content
