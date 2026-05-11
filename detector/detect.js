@@ -2295,12 +2295,20 @@ if (IS_BROWSER) {
       allFindings.push({ el: document.body, findings: qualityFindings });
     }
 
-    // Regex-on-HTML checks (shared with Node)
-    const htmlPatternFindings = checkHtmlPatterns(document.documentElement.outerHTML);
-    if (htmlPatternFindings.length > 0) {
-      const mapped = htmlPatternFindings.map(f => ({ type: f.id, detail: f.snippet })).filter(f => _ruleOk(f.type));
-      pageLevelFindings.push(...mapped);
-      allFindings.push({ el: document.body, findings: mapped });
+    // ── PATTERN 2 (Source-of-Truth Hierarchy): Regex checks are a Tier 2
+    // fallback for headless/CLI environments where the DOM is not live.
+    // In the browser, getComputedStyle (Tier 1) is the ONLY source of truth.
+    // Running both tiers simultaneously on the same element causes
+    // finding-count inflation (the off-by-one bug: 11 detected → UI shows 12).
+    // Regex is "blind" — it can't know if a CSS rule is actually applied or
+    // overridden. Only the rendered state (DOM) knows the truth.
+    if (!IS_BROWSER) {
+      const htmlPatternFindings = checkHtmlPatterns(document.documentElement.outerHTML);
+      if (htmlPatternFindings.length > 0) {
+        const mapped = htmlPatternFindings.map(f => ({ type: f.id, detail: f.snippet })).filter(f => _ruleOk(f.type));
+        pageLevelFindings.push(...mapped);
+        allFindings.push({ el: document.body, findings: mapped });
+      }
     }
 
     if (pageLevelFindings.length > 0) {
